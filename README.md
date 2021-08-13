@@ -105,7 +105,11 @@ Definir la tabla `ItemGroup` y la tabla de juntura entre `Item`y `ItemGroup`. La
 Las siguientes preguntas requieren un grado de comprensión alto de como funcionan los web servers y los sistemas operativos. Sí querés investigar adelante! Si no, no te preocupes, lo vas a aprender cuando estes trabajando en Optiwe :)
 
  * ¿Que es el python GIL? 
+ * El Python GIL se refiere al global interpreter Lock de Python, el cual permite que sólo un thread tome el control del intérprete.
+
  * ¿Que problema genera el GIL en los web servers?
  * ¿Cómo hacen los web servers basados en python para manejar más de una request en paralelo si están limitados por el python GIL?
+ * 
  * ¿Cómo cambió el paradigma la introducción de async-io y el event loop?
+ * 
  * ¿Qué ventaja tiene usar un stack basado en async-io por sobre un stack tradicional basado en multiprocessing? 
