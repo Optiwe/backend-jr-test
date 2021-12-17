@@ -61,9 +61,9 @@ Es más importante que logres escribir el código para que los tests pasen que l
 Para ejecutar los tests directamente sobre el container `backend-jr-test-server` utiliza los siguientes comandos:
 
  * Correr docker compose: `docker-compose up`
- * Test de verificación: `docker exec backend-jr-test-server bash -c 'cd backend && pytest -s -v test_api.py::ApiTestCase::test_status'`
- * Tests de unidad (ver más abajo para más información): `docker exec backend-jr-test-server bash -c 'cd backend && pytest -s -v test_itemservice.py'`
- * Tests de integración (ver más abajo para más información): `docker exec backend-jr-test-server bash -c 'cd backend && pytest -s -v test_api.py'`
+ * Test de verificación: `docker exec backend-jr-test-server bash -c "cd backend && pytest -s -v test_api.py::ApiTestCase::test_status"`
+ * Tests de unidad (ver más abajo para más información): `docker exec backend-jr-test-server bash -c "cd backend && pytest -s -v test_itemservice.py"`
+ * Tests de integración (ver más abajo para más información): `docker exec backend-jr-test-server bash -c "cd backend && pytest -s -v test_api.py"`
 
 ### Archivos del proyecto
 
