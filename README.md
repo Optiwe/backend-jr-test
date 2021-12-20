@@ -104,11 +104,9 @@ El proyecto utiliza Flask como framework web: https://flask.palletsprojects.com/
 
 ### Código
 
-Una vez que tanto los tests de unidad como los de integración te estén pasando, subí tu código a tu repositorio, en la rama que creaste con tu nombre y crea un PR utilizando la opción "compare across forks". 
+Una vez que tanto los tests de unidad como los de integración te estén pasando, subí tu código a tu repositorio, en la rama que creaste con tu nombre y crea un PR contra la rama `main`La `base` debe ser la rama `main` y la rama `compare` debe ser la rama cuyo nombre sea tu nombre y apellido.
 
-Esta última opción te permitirá crear un PR entre tu rama en tu repositorio local y la rama main en el repositorio de Optiwe. La `base` debe ser `Optiwe/backend-jr-test` rama `main` y la rama `compare` debe ser tu repositorio personal y rama cuyo nombre sea tu nombre y apellido.
-
-Una vez creado el PR avisanos por email.
+Una vez creado el PR avisanos por email enviandonos el link a tu repositorio personal.
 
 ### Q&A
 
