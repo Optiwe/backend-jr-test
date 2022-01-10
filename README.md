@@ -126,12 +126,49 @@ CREATE TABLE IF NOT EXISTS item (
 
 Definir la tabla `ItemGroup` y la tabla de juntura entre `Item`y `ItemGroup`. La entidad `ItemGroup` representa un grupo de items, por ejemplo, dado el Item `Yogourt`, este puede pertenecer a los grupos `Heladera` y `Lacteos`
 
+
+#### Respuesta
+Para modelar una relación many-to-many se debe utilizar una join table que tenga una FK a las tablas a relacionar de la siguiente manera:
+
+```sql
+CREATE TABLE IF NOT EXISTS itemgroup (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    description VARCHAR(255) NOT NULL,
+);
+
+CREATE TABLE IF NOT EXISTS item_itemgroup (
+    id_item INT UNSIGNED NOT NULL,
+	id_itemgroup INT UNSIGNED NOT NULL,
+	PRIMARY KEY (id_item, id_itemgroup),
+	FOREIGN KEY (id_item) REFERENCES item(id),
+	FOREIGN KEY (id_itemgroup) REFERENCES itemgroup(id)
+);
+```
+La tabla `item_itemgroup` tendra una fila por cada relacion que necesitemos definir. De manera tal que si necesitamos obtener todos  los items que pertenezcan al grupo `Heladera` y `Lacteos` al mismo timepo podremos hacer una consulta como la siguiente:
+
+```sql
+SELECT i.id FROM (
+	SELECT ii.id_item 
+			FROM item_itemgroup ii, itemgroup ig 
+			WHERE ii.id_itemgroup = ig.id
+			AND ig.description = 'Lacteos'
+	) lac, 
+	(SELECT ii.id_item 
+			FROM item_itemgroup ii, itemgroup ig 
+			WHERE ii.id_itemgroup = ig.id
+			AND ig.description = 'Heladera'
+) hel, item i WHERE i.id = hel.id_item AND i.id = lac.id_item;
+```
 ### Concurrencia en web servers basados en python
 
 Las siguientes preguntas requieren un grado de comprensión alto de como funcionan los web servers y los sistemas operativos. Sí querés investigar adelante! Si no, no te preocupes, lo vas a aprender cuando estes trabajando en Optiwe :)
 
  * ¿Que es el python GIL? 
+   * El GlobalInterpreterLock es un Mutex que posee el interprete de python para que no se esté ejecutando en más de un thread a la vez. De no ser así, se generarían problemas de concurrencia como data races.
  * ¿Que problema genera el GIL en los web servers?
+   * Mientras se está atendiendo una requests, el interprete no puede atender otra requests que esten en cola. Lo que en la práctica limita la capacidad de requests/min que posee el servidor.
  * ¿Cómo hacen los web servers basados en python para manejar más de una request en paralelo si están limitados por el python GIL?
- * ¿Cómo cambió el paradigma la introducción de async-io y el event loop?
- * ¿Qué ventaja tiene usar un stack basado en async-io por sobre un stack tradicional basado en multiprocessing? 
+   * No conozco el detalle de la implementación de los webservers de python, pero se podría implementar utilizando llamadas `fork()` para manejar las distintas requests en simultaneo, la desventaja es que sería poco eficiente debido a el costo de `fork()`. Otra solución es utilizar un event loop lo que permite concurrencia sin necesidad de threads.  
+* ¿Cómo cambió el paradigma la introducción de async-io y el event loop?
+* ¿Qué ventaja tiene usar un stack basado en async-io por sobre un stack tradicional basado en multiprocessing?
+   * Un stack basado en async-io permite manejar muchas tareas de IO en simultaneo y de forma efectiva sin necesidad de correr multiles threads a la vez evitando todas los problemas asociados con esto como por ejemplo data races. 
