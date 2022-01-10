@@ -33,29 +33,37 @@ class ItemDAO(object):
 
         return Item(item_id, description, 0)
 
+    @staticmethod
+    def check_list_orders(order_by, order):
+        if order and not order_by:
+            raise ValueError("order_by must be not null if order is not null")
+
+        if order.upper() not in ['ASC', 'DESC']:
+            raise ValueError('order_by not valid')
+
+        item_attrs = ['id', 'description', 'available_amount']
+        order_by = order_by.split(',')
+        for attr in order_by:
+            if attr not in item_attrs:
+                raise ValueError('order_by not valid')
+
     def list(self, amount=None, order_by=None, order=None) -> List[Item]:
         """
-        BE CAREFUL USING THIS METHOD, IT'S NOT SQL-INJECTION SAFE. IT SHOULD NOT RECIEVE USER INPUT
+        :raise ValueError: If order_by is not an item valid attribute.
         :raise ValueError: If order is set and order_by is null.
         :raise ValueError: If order is other than 'DESC' or 'ASC'.
         :raise ValueError: If amount is not an int.
         """
-        # I cannot use cursor.execute() in this method
+        # I cannot use cursor.execute() in this method to sanite the input
         # since execute will escape order, making the query
         # look like: SELECT id FROM item ORDER BY 'id' DESC
         # This query will not output the desire results since id != 'id'
         # Therefore, I had to use python's string interpolation
 
-        # TODO: better test this method?
-        if order and not order_by:
-            raise ValueError("order_by must be not null if order is not null")
-
         if not amount:
             amount = 10 ** 6
         amount = int(amount)
-
-        if order.upper() not in ['ASC', 'DESC']:
-            raise ValueError('order_by not valid')
+        self.check_list_orders(order_by, order)
 
         cursor = self.db.get_connection()
 
@@ -63,7 +71,7 @@ class ItemDAO(object):
         if order_by:
             query += f" ORDER BY {order_by}"
             if order:
-                query += f" {order}"  # This line can cause SQL INJECTION
+                query += f" {order}"
         query += f" LIMIT {amount}"
 
         cursor.execute(query)

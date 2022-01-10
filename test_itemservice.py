@@ -63,6 +63,21 @@ class ItemServiceTestCase(TestCase):
             'available_amount': 0
         }], items_dict)
 
+    def test_list_items_wrong_params(self):
+        with pytest.raises(ValueError):
+            self.item_service.list(amount=2, order='DESC')
+
+        with pytest.raises(ValueError):
+            self.item_service.list(amount='NoNumber')
+
+        with pytest.raises(ValueError):
+            self.item_service.list(
+                amount=2, order_by='id', order='NoValidOrder')
+
+        with pytest.raises(ValueError):
+            self.item_service.list(
+                amount=2, order_by='NoValidAttr', order='ASC')
+
     def test_increment_item_available_amount(self):
         item_description = self._generate_random_string()
         item = self.item_service.create(item_description)
